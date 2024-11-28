@@ -14,8 +14,22 @@ import torch
 import torchvision
 from torchsummary import summary
 
+from sklearn.metrics import confusion_matrix, classification_report
 # Step 1: Dataset Preparation (no changes)
 data_path = '/content/data'
+
+num_epochs = 5
+num_classes = 2
+learning_rate = 0.001
+
+batch_size = 32
+
+epoch_loss = 0
+lost_list = []  # to store the losses in list
+training_loss = []  # to store the epoch training loss
+training_acc = []  # to store the training accuracy
+epoch_num = []  # epoch number
+num_epoch = 5
 
 # create an empty list
 transform = [torchvision.transforms.Resize((256, 256)),  # Resize the image to 256x256 first
@@ -35,7 +49,6 @@ test_size = len(full_dataset) - train_size  # 30% of data will be tested #daripa
 train_dataset, test_dataset = torch.utils.data.random_split(full_dataset, [train_size, test_size])
 
 # setting up your data loader
-batch_size = 32
 #makin rendah makin slow, makin detail tapi possible overfitting try hard
 
 # Train loader
@@ -50,9 +63,6 @@ test_loader = torch.utils.data.DataLoader(test_dataset,
 
 device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 
-num_epochs = 5
-num_classes = 2
-learning_rate = 0.001
 
 
 # Step 2: Create CNN model with 2 Convolutional layers
@@ -134,14 +144,7 @@ criterion = torch.nn.CrossEntropyLoss() #
 optimizer = torch.optim.Adam(model.parameters(), lr=0.001)  # SDG is shit, so slow, waste my GPU, use my name
 
 # Set the model into training mode
-epoch_loss = 0
-lost_list = []  # to store the losses in list
-training_loss = []  # to store the epoch training loss
-training_acc = []  # to store the training accuracy
-epoch_num = []  # epoch number
 
-
-num_epoch = 5
 model.train()
 total_step = len(train_loader)
 for epoch in range(num_epoch):
@@ -187,7 +190,6 @@ plt.show()
 #classification report
 
 
-from sklearn.metrics import confusion_matrix, classification_report
 y_pred = []
 y_true = []
 
